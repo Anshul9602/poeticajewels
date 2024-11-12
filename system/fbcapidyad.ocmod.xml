@@ -1,0 +1,230 @@
+<modification>
+<name>|<b>OCT</b>| Facebook Conversion API + Facebook Pixel + Dynamic Ads</name>
+<author>opencarttools@gmail.com</author>
+<version>2.X - 3.X</version>
+<link>http://opencarttools.net/document.php?extid=42626</link>
+<code>42626</code>
+<file path="admin/controller/setting/*.php">
+	<operation error="skip">
+		<search position="before"><![CDATA[$data['countries'] =]]></search>
+		<add position="before"><![CDATA[$data['tab_fbcapidyad'] = ''; $data['tab_fbcapidyad_html'] = '';
+		if(file_exists('model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['tab_fbcapidyad'] = $this->model_extension_fbcapidyad->gettabhtml();
+			$data['tab_fbcapidyad_html'] = $this->model_extension_fbcapidyad->gethtml(isset($store_info) ? $store_info : array());
+		}]]></add>
+	</operation>
+</file>
+<file path="admin/view/template/setting/*.*">
+	<operation error="skip">
+		<search position="after"><![CDATA[tab_server]]></search>
+		<add position="after"><![CDATA[<?php echo $tab_fbcapidyad; ?>]]></add>
+	</operation>
+	<operation error="skip">
+		<search position="before"><![CDATA[id="tab-general"]]></search>
+		<add position="before"><![CDATA[<?php echo $tab_fbcapidyad_html; ?>]]></add>
+	</operation>
+</file>
+<file path="catalog/controller/common/header.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['google_analytics'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['google_analytics'] .= $this->model_extension_fbcapidyad->pageview();
+		}]]></add> 
+	</operation>
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['analytics'] = array();]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['analytics'][] = $this->model_extension_fbcapidyad->pageview();
+		}]]></add> 
+	</operation>				 
+</file>
+<file path="catalog/controller/account/login.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->login();
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/account/success.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['text_message'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['text_message'] .= $this->model_extension_fbcapidyad->sign_up();
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/information/contact.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->contact();
+		}]]></add>
+	</operation> 
+</file>	
+<file path="catalog/controller/checkout/cart.php">
+	<operation error="skip">
+		<search position="after" index="0"><![CDATA[$json['total'] =]]></search>
+		<add position="after" index="0"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$json['total'] .= $this->model_extension_fbcapidyad->atcw($this->request->post['product_id'], $quantity, 1);
+		}]]></add>
+	</operation>
+	<operation error="skip">
+		<search position="after" index="1"><![CDATA[$json['total'] =]]></search>
+		<add position="after" index="1"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$json['total'] .= $this->model_extension_fbcapidyad->rmc($this->request->post['key']);
+		}]]></add>
+	</operation>
+</file>
+<file path="catalog/controller/account/wishlist.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$json['success'] = sprintf($this->language->get('text_success')]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$json['success'] .= $this->model_extension_fbcapidyad->atcw($this->request->post['product_id'], 1, 2);
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/product/product.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php') && isset($this->request->get['product_id'])) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->viewcont($this->request->get['product_id']);
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/product/category.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php') && isset($this->request->get['path'])) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->viewcategory($this->request->get['path']);
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/product/search.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php') && isset($this->request->get['search'])) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->search($this->request->get['search']);
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/checkout/cart.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->viewcart();
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/checkout/checkout.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->beginchk();
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/checkout/confirm.php">
+	<operation error="skip">
+		<search position="before"><![CDATA[$this->load->view]]></search>
+		<add position="before"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['column_name'] = $this->language->get('column_name');
+			$data['column_name'] .= $this->model_extension_fbcapidyad->addshpinfo();
+			$data['column_name'] .= $this->model_extension_fbcapidyad->addpayinfo();				
+		}]]></add>
+	</operation> 
+</file>
+<!-- J3 -->
+<file path="catalog/controller/journal3/checkout.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['footer'] .= $this->model_extension_fbcapidyad->beginchk();
+			$data['footer'] .= $this->model_extension_fbcapidyad->addshpinfo();
+			$data['footer'] .= $this->model_extension_fbcapidyad->addpayinfo();
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/controller/checkout/success.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$this->cart->clear();]]></search>
+		<add position="after"><![CDATA[$data['fbcapidyad_code'] = '';
+		if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['fbcapidyad_code'] = $this->model_extension_fbcapidyad->purchase($this->session->data['order_id']);
+		}]]></add>
+	</operation> 
+	<operation error="skip">
+		<search position="after"><![CDATA[$data['footer'] =]]></search>
+		<add position="after"><![CDATA[if(!empty($data['fbcapidyad_code'])) {
+			$data['footer'] .= $data['fbcapidyad_code'];
+		}]]></add>
+	</operation>
+</file>
+
+<!-- xtensions -->	
+<file path="catalog/controller/extension/module/xtensions/checkout/xheader.php|catalog/controller/extension/module/xtensions/checkout/xsuccess_header.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$this->data['analytics'] = array();]]></search>
+		<add position="after"><![CDATA[if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$this->data['analytics'][] = $this->model_extension_fbcapidyad->pageview();
+		}]]></add>
+	</operation>				  
+</file>
+<file path="catalog/controller/extension/module/xtensions/checkout/xfooter.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[function index]]></search>
+		<add position="after"><![CDATA[$this->data['fbcapidyad_beginchk'] = '';
+		if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$this->data['fbcapidyad_beginchk'] = $this->model_extension_fbcapidyad->beginchk();
+		}]]></add>
+	</operation> 
+</file>
+<file path="catalog/view/theme/default/template/extension/module/xtensions/checkout/xfooter.*">
+	<operation error="skip">
+		<search position="before"><![CDATA[<footer]]></search>
+		<add position="before"><![CDATA[{{ fbcapidyad_beginchk }}]]></add>
+	</operation> 
+</file>
+<file path="catalog/view/theme/default/template/extension/module/xtensions/checkout/xfooter.tpl">
+	<operation error="skip">
+		<search position="before"><![CDATA[<footer]]></search>
+		<add position="before"><![CDATA[<?php echo $fbcapidyad_beginchk; ?>]]></add>
+	</operation> 
+</file>
+				
+<file path="catalog/controller/extension/module/xtensions_success.php">
+	<operation error="skip">
+		<search position="after"><![CDATA[$order_id = $this->session->data['xsuccess_order_id'];]]></search>
+		<add position="after"><![CDATA[$data['fbcapidyad_code'] = '';
+		if(file_exists('catalog/model/extension/fbcapidyad.php')) { 
+			$this->load->model('extension/fbcapidyad');
+			$data['fbcapidyad_code'] = $this->model_extension_fbcapidyad->purchase($order_id);
+		}]]></add>
+	</operation>
+	<operation error="skip">
+		<search position="after"><![CDATA[$this->data['xfooter'] =]]></search>
+		<add position="after"><![CDATA[if(!empty($this->data['fbcapidyad_code'])) {
+			$this->data['xfooter'] .= $this->data['fbcapidyad_code'];
+		}]]></add>
+	</operation> 
+</file>
+</modification>
